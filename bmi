@@ -1,0 +1,230 @@
+#include <windows.h>
+#include <string>
+#include <sstream>
+#include <windowsx.h>
+#include <iostream>
+
+using namespace::std;
+
+LPSTR NazwaKlasy = "Klasa Okienka"; // wskaźnik
+MSG Komunikat;
+HWND g_hPrzycisk;
+HWND g_hPrzycisk1;
+HWND g_hPrzycisk3;
+HWND hText0;
+HWND hText1;
+HWND hText2;
+HWND hText3;
+HWND hText4;
+HWND hText5;
+HWND hText6;
+HWND hStatic0;
+HWND hStatic1;
+HWND hStatic2;
+HWND hStatic3;
+HWND hStatic4;
+HWND hStatic5;
+HWND hCombo1;
+HWND hCombo2;
+HWND hCombo3;
+HWND hCombo4;
+HWND hCheckBox;
+HWND hButton1;
+HWND hButton2;
+HWND wParam;
+HWND g_hRamka;
+#define ID_BUTTON 500
+#define ID_BUTTON1 501
+
+LRESULT CALLBACK WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam );
+
+int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow )
+{
+
+    // WYPEŁNIANIE STRUKTURY
+    WNDCLASSEX wc;
+
+    wc.cbSize = sizeof( WNDCLASSEX );
+    wc.style = 0;
+    wc.lpfnWndProc = WndProc;
+    wc.cbClsExtra = 0;
+    wc.cbWndExtra = 0;
+    wc.hInstance = hInstance;
+    wc.hIcon = LoadIcon( NULL, IDI_APPLICATION );
+    wc.hCursor = LoadCursor( NULL, IDC_ARROW );
+    wc.hbrBackground =( HBRUSH )( COLOR_WINDOW + 1,1,2 );
+    wc.lpszMenuName = NULL;
+    wc.lpszClassName = NazwaKlasy;
+    wc.hIconSm = LoadIcon( NULL, IDI_APPLICATION );
+
+
+
+    // REJESTROWANIE KLASY OKNA
+    if( !RegisterClassEx( & wc ) )
+    {
+        MessageBox( NULL, "ALERT!", "ODMOWA REJESTRACJI",
+        MB_ICONEXCLAMATION | MB_OK );
+        return 1;
+    }
+
+    // TWORZENIE OKNA
+    HWND hwnd;
+
+    hwnd = CreateWindowEx( WS_EX_CLIENTEDGE, NazwaKlasy, "Kalkulator Body Mass Index", WS_OVERLAPPEDWINDOW | WS_HSCROLL | WS_VSCROLL,
+    CW_USEDEFAULT, CW_USEDEFAULT, 620, 300, NULL, NULL, hInstance, NULL); //szerokość, wysokość
+
+ /* if( hwnd == NULL )
+    {
+        MessageBox( NULL, "Okno odmówiło przyjścia na świat!", "Ale kicha...", MB_ICONEXCLAMATION );
+        return 1;
+    }*/
+
+    HWND hStatic0 = CreateWindowEx( 0, "STATIC", NULL, WS_CHILD | WS_VISIBLE |
+    SS_LEFT, 30, 20, 130, 20, hwnd, NULL, hInstance, NULL );
+
+        SetWindowText( hStatic0, "Wybierz plec" );
+
+        hButton1 = CreateWindowEx( 0, "BUTTON", "Kobieta", WS_CHILD | WS_VISIBLE | WS_BORDER | BS_RADIOBUTTON,
+        170, 20, 75, 20, hwnd,( HMENU ) ID_BUTTON, hInstance, NULL );
+
+        hButton2 = CreateWindowEx( 0, "BUTTON", "Mezczyzna", WS_CHILD | WS_VISIBLE | WS_BORDER | BS_RADIOBUTTON,
+        250, 20, 100, 20, hwnd,( HMENU ) ID_BUTTON1, hInstance, NULL );
+
+
+        /*HWND hButton1 = CreateWindowEx( NULL, "BUTTON", "Pierwszy", WS_CHILD | WS_VISIBLE |
+        WS_BORDER, 170, 20, 75, 20, hwnd,( HMENU ) ID_PRZYCISK, hInstance, NULL ),
+        hButton2 = CreateWindowEx( NULL, "BUTTON", "Drugi", WS_CHILD | WS_VISIBLE |
+        WS_BORDER, 250, 20, 100, 20, hwnd,( HMENU ) ID_PRZYCISK1, hInstance, NULL );*/
+
+    HWND hStatic = CreateWindowEx( 0, "STATIC", NULL, WS_CHILD | WS_VISIBLE |
+    SS_LEFT, 30, 50, 130, 20, hwnd, NULL, hInstance, NULL );
+
+        SetWindowText( hStatic, "Podaj wiek" );
+
+        HWND hText = CreateWindowEx( WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER,
+        170, 50, 162, 20, hwnd, NULL, hInstance, NULL );
+
+
+    HWND hStatic1 = CreateWindowEx( 0, "STATIC", NULL, WS_CHILD | WS_VISIBLE |
+    SS_LEFT, 30, 75, 130, 20, hwnd, NULL, hInstance, NULL );
+
+        SetWindowText( hStatic1, "Podaj wzrost [cm]" );
+
+        hText1 = CreateWindowEx( WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER,
+        170, 75, 162, 20, hwnd, NULL, hInstance, NULL );
+
+    HWND hStatic2 = CreateWindowEx( 0, "STATIC", NULL, WS_CHILD | WS_VISIBLE |
+    SS_LEFT, 30, 100, 130, 18, hwnd, NULL, hInstance, NULL );
+
+        SetWindowText( hStatic2, "Podaj wage [kg]" );
+
+        hText2 = CreateWindowEx( WS_EX_CLIENTEDGE, "EDIT", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER,
+        170, 100, 162, 20, hwnd, NULL, hInstance, NULL );
+
+    HWND hStatic3 = CreateWindowEx( 0, "STATIC", NULL, WS_CHILD | WS_VISIBLE |
+    SS_LEFT, 30, 130, 130, 20, hwnd, NULL, hInstance, NULL );	// czwarta liczba - wysokość tła, druga liczba to odległość od góry
+
+        SetWindowText( hStatic3, "Aktywnosc fizyczna" );
+
+        HWND hCombo2 = CreateWindowEx( WS_EX_CLIENTEDGE, "COMBOBOX", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER |
+        CBS_DROPDOWNLIST, 170, 128, 162, 200, hwnd, NULL, hInstance, NULL );
+
+        SendMessage( hCombo2, CB_ADDSTRING, 0,( LPARAM ) "Brak" );
+
+        SendMessage( hCombo2, CB_ADDSTRING, 0,( LPARAM ) "Mala (1-2 w tygodniu)" );
+
+        SendMessage( hCombo2, CB_ADDSTRING, 0,( LPARAM ) "Srednia (3-4 w tygodniu)" );
+
+        SendMessage( hCombo2, CB_ADDSTRING, 0,( LPARAM ) "Duza (4-5 w tygodniu)" );
+
+
+    HWND hStatic4 = CreateWindowEx( 0, "STATIC", NULL, WS_CHILD | WS_VISIBLE |
+    SS_LEFT, 30, 162, 130, 20, hwnd, NULL, hInstance, NULL );
+
+        SetWindowText( hStatic4, "Rodzaj pracy" );
+
+        HWND hCombo4 = CreateWindowEx( WS_EX_CLIENTEDGE, "COMBOBOX", NULL, WS_CHILD | WS_VISIBLE | WS_BORDER |
+        CBS_DROPDOWNLIST, 170, 160, 162, 200, hwnd, NULL, hInstance, NULL );
+
+        SendMessage( hCombo4, CB_ADDSTRING, 0,( LPARAM ) "Siedzaca" );
+
+        SendMessage( hCombo4, CB_ADDSTRING, 0,( LPARAM ) "Fizyczna" );
+
+	HWND hStatic5 = CreateWindowEx( 0, "STATIC", NULL, WS_CHILD | WS_VISIBLE |
+	SS_LEFT, 360, 20, 210, 170, hwnd, NULL, hInstance, NULL ); //od prawej, od góry, szerokość tekstu, wysokość tekstu
+
+	SetWindowText( hStatic5, "Zakresy wartości BMI: \n < 16 - wygłodzenie \n 16 - 16.99 - wychudzenie \n 17 - 18.49 - niedowaga \n 18.5 - 24.99 - wartość prawidłowa \n 25 - 29.99 - nadwaga \n 30 - 34.99 - I stopień otyłości \n 35 - 39.99 - II stopień otyłości \n > 40 - otyłość skrajna") ;
+
+    /*g_hRamka= CreateWindowEx(0, "RAMKA", "RAMKA", WS_CHILD | WS_VISIBLE | BS_GROUPBOX | WM_CTLCOLORSTATIC,
+    170, 200, 100, 100, hwnd, NULL, hInstance, NULL );*/
+
+
+    g_hPrzycisk3 = CreateWindowEx( 0, "BUTTON", "OBLICZ BMI", WS_CHILD | WS_VISIBLE, //visible - guzik jest widoczny
+    170, 200, 162, 30, hwnd, NULL, hInstance, NULL ); //hwnd - uchwyt do okna głównego
+
+
+    ShowWindow( hwnd, nCmdShow ); // Pokaż okienko...
+    UpdateWindow( hwnd );
+
+    // Pętla komunikatów
+    while( GetMessage( & Komunikat, NULL, 0, 0 ) )
+    {
+        TranslateMessage( & Komunikat );
+        DispatchMessage( & Komunikat );
+    }
+    return Komunikat.wParam;
+}
+
+
+// OBSŁUGA ZDARZEŃ
+LRESULT CALLBACK WndProc( HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam )
+{
+
+    switch( msg )
+    {
+	case WM_COMMAND:
+		 if((HWND ) lParam == g_hPrzycisk3)
+        {
+
+        DWORD dlugosc = GetWindowTextLength( hText0 ); // A 32-bit unsigned integer. The range is 0 through 4294967295 decimal.
+        dlugosc = GetWindowTextLength( hText1 );
+        dlugosc = GetWindowTextLength( hText2 );
+        LPSTR BuforWiek = ( LPSTR ) GlobalAlloc( GPTR, dlugosc + 1 );
+        LPSTR BuforWzrost = ( LPSTR ) GlobalAlloc( GPTR, dlugosc + 1 );
+        LPSTR BuforWaga = ( LPSTR ) GlobalAlloc( GPTR, dlugosc + 1 );
+        GetWindowText( hText0, BuforWiek, dlugosc + 1 );
+        GetWindowText( hText1, BuforWzrost, dlugosc + 1 );
+        GetWindowText( hText2, BuforWaga, dlugosc + 1 );
+
+
+        FLOAT Waga;
+        FLOAT Wzrost;
+        FLOAT Wiek;
+
+        Wiek = atoi( BuforWiek);
+        Waga = atoi( BuforWaga);
+        Wzrost = atoi( BuforWzrost);
+
+        std::ostringstream s;
+
+        s << (Waga/((Wzrost*Wzrost)/100));
+        LPCSTR wynik = s.str().c_str();
+        MessageBox( hwnd, wynik, "BMI Kalkulator", MB_ICONINFORMATION );
+        }
+
+		break;
+
+    case WM_CLOSE:
+        DestroyWindow( hwnd );
+        break;
+
+    case WM_DESTROY:
+        PostQuitMessage( 0 );
+        break;
+
+        default:
+        return DefWindowProc( hwnd, msg, wParam, lParam );
+    }
+
+    return 0;
+}
